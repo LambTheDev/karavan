@@ -3,7 +3,7 @@
     post:
       - id: postecb9
         path: process
-        to: direct:parsingTest
+        to: direct:forecast
         consumes: application/json
         produces: application/json
         bindingMode: json
@@ -13,7 +13,7 @@
       id: from5d9f
       uri: direct
       parameters:
-        name: parsingTest
+        name: forecast
       steps:
         - setProperty:
             id: setPropertyb67d
