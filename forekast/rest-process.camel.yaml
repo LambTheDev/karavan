@@ -64,6 +64,39 @@
                     groovy:
                       id: groovy3903
                       expression: body?.name && body?.city
+              - setProperty:
+                  id: setProperty8317
+                  name: name
+                  expression:
+                    groovy:
+                      id: groovyc81c
+                      expression: body.name
+              - to:
+                  id: to5bb4
+                  uri: https
+                  parameters:
+                    httpUri: https://api.open-meteo.com/v1/forecast?latitude=60.4518&longitude=22.2666&current_weather=true
+                    httpMethod: GET
+                    bridgeEndpoint: true
+                    skipRequestHeaders: true
+                    skipControlHeaders: true
+              - unmarshal:
+                  id: unmarshal10c2
+                  json:
+                    id: jsonfe10
+              - setBody:
+                  id: setBody7129
+                  note: City hard coded "Turku"
+                  expression:
+                    groovy:
+                      id: groovyd807
+                      expression: |-
+                        [
+                            name: exchangeProperty.name,
+                            city: "Turku",
+                            currentTemperature: body?.current_weather?.temperature,
+                            time: body?.current_weather?.time,
+                        ]
               - to:
                   id: toeed8
                   uri: kamelet:log-action
