@@ -1,19 +1,71 @@
 - rest:
-    id: rest3a85
+    id: rest-forecast
     post:
       - id: postecb9
         path: process
         to: direct:parsingTest
+        consumes: application/json
+        produces: application/json
+        bindingMode: json
 - route:
-    id: from-direct-parsingtest
-    description: Direct Parsing Test
-    nodePrefixId: from-direct-parsingtest
+    id: route-forecast
     from:
       id: from5d9f
       uri: direct
       parameters:
         name: parsingTest
       steps:
+        - setProperty:
+            id: setPropertyb67d
+            name: timestamp
+            expression:
+              groovy:
+                id: groovyc787
+                expression: java.time.Instant.now()
+        - setProperty:
+            id: setProperty0b4c
+            name: requestId
+            expression:
+              groovy:
+                id: groovyfe63
+                expression: java.util.UUID.randomUUID()
         - log:
-            id: log8001
-            message: "\"Hello world\""
+            id: log19af
+            message: "\"New request requestId: ${exchangeProperty.requestId} timestamp: ${exchangeProperty.timestamp}\""
+        - doTry:
+            id: doTry8829
+            doCatch:
+              - id: doCatchd204
+                exception:
+                  - org.apache.camel.support.processor.PredicateValidationException
+                steps:
+                  - setHeader:
+                      id: setHeader2846
+                      name: CamelHttpResponseCode
+                      expression:
+                        constant:
+                          id: constant355a
+                          expression: "400"
+                  - setBody:
+                      id: setBody1862
+                      expression:
+                        groovy:
+                          id: groovy68b7
+                          expression: "\"Invalid request\""
+                  - to:
+                      id: to3488
+                      uri: kamelet:log-action
+                      parameters:
+                        showAllProperties: true
+            steps:
+              - validate:
+                  id: validatee9de
+                  expression:
+                    groovy:
+                      id: groovy3903
+                      expression: body?.name && body?.city
+              - to:
+                  id: toeed8
+                  uri: kamelet:log-action
+                  parameters:
+                    showAllProperties: true
