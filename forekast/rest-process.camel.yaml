@@ -1,0 +1,19 @@
+- rest:
+    id: rest3a85
+    post:
+      - id: postecb9
+        path: process
+        to: direct:parsingTest
+- route:
+    id: from-direct-parsingtest
+    description: Direct Parsing Test
+    nodePrefixId: from-direct-parsingtest
+    from:
+      id: from5d9f
+      uri: direct
+      parameters:
+        name: parsingTest
+      steps:
+        - log:
+            id: log8001
+            message: "\"Hello world\""
